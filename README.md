@@ -8,4 +8,4 @@ FrontEnd: frontend for users
 
 
 Architecture
-!Architecture(Utilities/BUEventSearch.png)
+![Architecture](Utilities/BUEventSearch.png)
