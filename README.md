@@ -5,3 +5,7 @@ Uses web frontend for display
 Analyzer: Controls filtering, insertion, and data processing
 DBComs: Controls communications with Database including insertion and retrieval
 FrontEnd: frontend for users
+
+
+Architecture
+!Architecture(Utilities/BUEventSearch.png)
