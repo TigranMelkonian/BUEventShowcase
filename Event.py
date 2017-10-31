@@ -24,8 +24,8 @@ class Event:
     #https://docs.python.org/3/library/datetime.html
     #each timeDate class has attributes year, month, day, hour, minute, second, microsecond, tzinfo
     #can reference them like startTime.year, startTime.month, ect.
-    startTime = datetime.timedate()
-    endTime = datetime.timedate()
+    startTime = 0
+    endTime  = 0
     duration = endTime - startTime #overloaded operator
     
     cost = 0.00
