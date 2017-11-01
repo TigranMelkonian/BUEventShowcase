@@ -16,7 +16,7 @@ import requests
 
 
 host = 'search-eventapplication-ldgoqbtlexdxxkndppin4fmifm.us-east-1.es.amazonaws.com'
-awsauth = AWS4Auth('AKIAJYOM6S2EK4QZOUYQ', 'BcMrUsTgVrsoHbIVHR4eToiqP0hs2z9msUQajh3F', 'us-east-1', 'es')
+awsauth = AWS4Auth('your acces key here', 'your secret access key here', 'us-east-1', 'es')
 
 #connect to aws elasticsearch cluster instance : cluster name is "eventapplication"
 es = Elasticsearch(
