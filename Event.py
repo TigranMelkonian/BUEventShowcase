@@ -7,6 +7,7 @@ import json
 
 class Event:
     data = {}
+    eventName = ""
     organizer = ""
     participants = ""
     description = ""
@@ -43,7 +44,8 @@ class Event:
     otherIDs = "asdf"
     
     '''Constructor with all the required fields needed'''
-    def __init__(self, organ, parti, desc, regReq, loc, inCost, inDate, endDate):
+    def __init__(self, name, organ, parti, desc, regReq, loc, inCost, inDate, endDate):
+        self.eventName=name
         self.organizer = organ
         self.participants = parti
         self.description = desc
@@ -56,7 +58,7 @@ class Event:
     
     '''Converts existing data in the object into a dictionary, then returns it as a JSON object'''
     def getJSON(self):
-        self.data = {"organizer":self.organizer, "participants":self.participants, "description":self.description, \
+        self.data = {"eventName":self.eventName, "organizer":self.organizer, "participants":self.participants, "description":self.description, \
                      "tags": self.tags, "registrationRequired":self.registrationRequired, "location":self.location, \
                      "address":self.address, "city":self.city, "zipCode":self.zipCode, "startTime":self.startTime, \
                      "endTime": self.endTime, "duration":self.duration, "cost":self.cost, "minCost":self.minCost, \
@@ -73,7 +75,9 @@ class Event:
         for key,value in self.data.items():
             #self.eval(key)=value
             #yeah i know this is bad way to reference things
-            if(key=="organizer"):
+            if(key=="eventName"):
+                self.eventName=value
+            elif(key=="organizer"):
                 self.organizer=value
             elif(key=="participants"):
                 self.participants=value
@@ -115,6 +119,12 @@ class Event:
     
     
     ''' Various get and set functions'''    
+    def updateEventName(self,updateTerm):
+        self.eventName=updateTerm
+        
+    def getEventName(self):
+        return self.eventName
+
     def updateOrganizer(self, updateTerm):
         self.organizer=updateTerm
     
