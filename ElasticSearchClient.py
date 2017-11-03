@@ -80,8 +80,8 @@ mapping=  {
         }
 
 
-if __name__ == "__main__":
-    getData() #grabs our data from the event object
+def main(self):
+    self.getData() #grabs our data from the event object
     uniqueID = data['eventName'] + data['startTime']
 
     #connect to aws elasticsearch cluster instance : cluster name is "eventapplication"
@@ -94,8 +94,8 @@ if __name__ == "__main__":
     print(es.info())
 
     es.indices.create(index=uniqueID, ignore=400)
-    es.indices.put_mapping(index=uniqueID, body=data, doc_type='csv')
+    es.indices.put_mapping(index=uniqueID, body=self.data, doc_type='csv')
 
 
-
+main()
 
