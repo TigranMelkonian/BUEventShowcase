@@ -69,7 +69,7 @@ class Event:
         return json_data
     
     def getDictionary(self):
-        return self.dictionary
+        return self.data
     
     '''Reads in JSON file and saves it into the object'''
     def jsonToEventObject(self,fileName):
