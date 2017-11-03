@@ -13,7 +13,8 @@ import json
 import copy
 import csv
 import requests
-import Event
+from Event import Event
+
 
 #TODO: create spreadsheet that has access codes that inputs to host/auth
 host = 'search-eventapplication-ldgoqbtlexdxxkndppin4fmifm.us-east-1.es.amazonaws.com'
@@ -21,9 +22,6 @@ awsauth = AWS4Auth('your acces key here', 'your secret access key here', 'us-eas
 
 data = {}
 
-#grab data from Event Object
-def getData(self):
-    self.data = Event.getDictionary()
 
 
 # add test-index to elastic search cluster and link mapping
@@ -78,24 +76,23 @@ mapping=  {
                 }
             }
         }
+Event1 =  Event("event1", "IOrganizer", "Participants", "descript", False, "boston", "cost", "date", "endDate")
+data = Event1.getDictionary()
+uniqueID = data['eventName'] + data['startTime']
+
+#connect to aws elasticsearch cluster instance : cluster name is "eventapplication"
+es = Elasticsearch(
+    hosts=[{'host': host, 'port': 443}],
+    http_auth=awsauth,
+    use_ssl=True,
+    verify_certs=True,
+    connection_class=RequestsHttpConnection)    
+print(es.info())
+
+es.indices.create(index=uniqueID, ignore=400)
+es.indices.put_mapping(index=uniqueID, body=data, doc_type='csv')
 
 
-def main(self):
-    self.getData() #grabs our data from the event object
-    uniqueID = data['eventName'] + data['startTime']
-
-    #connect to aws elasticsearch cluster instance : cluster name is "eventapplication"
-    es = Elasticsearch(
-            hosts=[{'host': host, 'port': 443}],
-            http_auth=awsauth,
-            use_ssl=True,
-            verify_certs=True,
-            connection_class=RequestsHttpConnection)    
-    print(es.info())
-
-    es.indices.create(index=uniqueID, ignore=400)
-    es.indices.put_mapping(index=uniqueID, body=self.data, doc_type='csv')
 
 
-main()
 
