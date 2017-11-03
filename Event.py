@@ -43,8 +43,6 @@ class Event:
     ID = 123
     otherIDs = "asdf"
     
-    def main():
-
 
     '''Constructor with all the required fields needed'''
     def __init__(self, name, organ, parti, desc, regReq, loc, inCost, inDate, endDate):
