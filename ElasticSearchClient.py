@@ -18,7 +18,7 @@ from Event import Event
 
 #TODO: create spreadsheet that has access codes that inputs to host/auth
 host = 'search-eventapplication-ldgoqbtlexdxxkndppin4fmifm.us-east-1.es.amazonaws.com'
-awsauth = AWS4Auth('your acces key here', 'your secret access key here', 'us-east-1', 'es')
+awsauth = AWS4Auth( 'AKIAITWX6QS2WAYB3NPQ', 'yacyjM/f02hTEhRcHdtXEYFdPEuiShutvOWqze2H', 'us-east-1', 'es')
 
 data = {}
 
@@ -34,10 +34,10 @@ def makeMapping(self, es):
 mapping=  {
             "properties": {
 
-                "title": {
+                "eventName": {
                     "type":"string",
                     "index":"analyzed"
-                },"categories": {
+                },"organizer": {
                     "type":"string",
                     "index":"analyzed"
                 },"language": {
@@ -70,14 +70,14 @@ mapping=  {
                 },"rank": {
                     "type":"float",
                     "index":"analyzed"
-                },"link": {
-                    "type":"string",
-                    "index":"not_analyzed"
                 }
             }
         }
-Event1 =  Event("event1", "IOrganizer", "Participants", "descript", False, "boston", "cost", "date", "endDate")
-data = Event1.getDictionary()
+
+event1 =  Event("event1", "IOrganizer", "Participants", "descript", False, "boston", "cost", "date", "endDate")
+event1.getJSON()#this just updates dictionary
+data = event1.getDictionary()
+print(data)
 uniqueID = data['eventName'] + data['startTime']
 
 #connect to aws elasticsearch cluster instance : cluster name is "eventapplication"
@@ -90,7 +90,7 @@ es = Elasticsearch(
 print(es.info())
 
 es.indices.create(index=uniqueID, ignore=400)
-es.indices.put_mapping(index=uniqueID, body=data, doc_type='csv')
+es.indices.put_mapping(index=uniqueID, body=data, doc_type='JSON')#does not accep data's mapping but accepts mapping. 
 
 
 
