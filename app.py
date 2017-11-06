@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template("index.htm")
+    return render_template("/../frontEnd/index.htm")
 '''
 def checkEventID(event):
 	if event.id in ElasticSearchClient.es:
