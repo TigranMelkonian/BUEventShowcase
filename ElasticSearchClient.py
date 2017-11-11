@@ -121,14 +121,39 @@ class ES_Client:
                }
         if self.client != None:
             self.client.create(index=self.indexLabel,body=cfg)
-            
+        else: #here we have to define what happens when the client already exists
+            print("hello, already exists")
+            whereWeWantToInsert = self.index
+            #self.client._bulk_insert() 
+            #add node to its respective index
+
     def index_delete( self ):
         if self.client != None and self.client.exists(index=self.indexLabel):
             r = self.client.delete(index=self.indexLabel)
 
+    def checkFormatting(self, eventList):
+        r0   = { '_op_type': "",
+                 '_index':self.es,
+                 '_type':"",
+                 '_id':int,
+                 'eventName':"", 'organizer': "",'participants':"",'description':"",'tags':[],'registrationRequired':bool,'location':"",'address':'','city':'','zipCode':"",'startTime':"",'endTime':"",'duration':int,'cost':int,'minCost':int,'maxCsot':int,'refundPolicy':bool,'subOrganizers':"",'sponsors':""}        
+        docL = []
+        for event in eventList:
+            try:
+                entry=copy.deepcopy(r0)
+                for key in r0:
+                    if key in event:
+                        entry[key]=event.get(key)
+                docL.append(entry)
+            except:
+                print ('error that prevents sending event to stic')
+        return docL
+                
+
     def send_events_to_ES(self, eventList):
         '''
         Sends list of podcasts to ES
+        '''
         '''
         r0   = { '_op_type': "",
                  '_index':self.es,
@@ -136,6 +161,7 @@ class ES_Client:
                  '_id':int,
                  'eventName':"", 'organizer': "",'participants':"",'description':"",'tags':[],'registrationRequired':bool,'location':"",'address':'','city':'','zipCode':"",'startTime':"",'endTime':"",'duration':int,'cost':int,'minCost':int,'maxCsot':int,'refundPolicy':bool,'subOrganizers':"",'sponsors':""}        
         docL = []
+        '''
         #in future would call andy's event.py
         eventList = [{ '_op_type':'index',
                        '_index':'math',
@@ -150,7 +176,7 @@ class ES_Client:
                        'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     }]
 
-        
+        '''
         print ('sending event to ES')
         for event in eventList:
             try:
@@ -161,8 +187,10 @@ class ES_Client:
                 docL.append(entry)
             except:
                 print ('error that prevents sending event to stic')
+        '''
+        docL=self.checkFormatting(eventList)
         self._bulk_insert( docL )
-                                   
+                                  
     def _bulk_insert( self, docL ):
         try:
             helpers.bulk(client=self.es,actions=docL,stats_only=True) 
