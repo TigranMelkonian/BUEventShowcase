@@ -68,7 +68,7 @@ footer .block .widget {margin-top: 50px; }
 .arrow-down {display: none; }
 .main-featured-text h1 {font-size: 35px; }
 .featured-bg-slide {display: none; }
-.mian-featured-area {background-color: #00171f; background-image: url("../images/responsive-bg.png"); background-size: cover; float: left; padding: 60px 20px; position: relative; width: 100%; }
+.mian-featured-area {background-color: #00171f; background-image: url("../images/background.png"); background-size: cover; float: left; padding: 60px 20px; position: relative; width: 100%; }
 .search-form-map {float: left; padding: 0 15px; position: static; -webkit-transform: none; -moz-transform: none; -ms-transform: none; -o-transform: none; transform: none; width: 100%; }
 .map-area .search-form-map form .field:last-child {width: 100%; }
 .subscribe-sec form {width: 100%; }
