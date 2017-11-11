@@ -1,5 +1,5 @@
 '''
-created on November 1st, 2017
+created on November 5th, 2017
 
 @author Tigran Melkonian
 '''
@@ -13,25 +13,34 @@ import json
 import copy
 import csv
 import requests
-from Event import Event
 
 
-#TODO: create spreadsheet that has access codes that inputs to host/auth
-host = 'search-eventapplication-ldgoqbtlexdxxkndppin4fmifm.us-east-1.es.amazonaws.com'
-awsauth = AWS4Auth( 'AKIAITWX6QS2WAYB3NPQ', 'yacyjM/f02hTEhRcHdtXEYFdPEuiShutvOWqze2H', 'us-east-1', 'es')
+class ES_Client:
+    def __init__(self,args):
+        self.args = args
+        self.es = None
+        self.client = None
+        host = 'search-eventapplication-ldgoqbtlexdxxkndppin4fmifm.us-east-1.es.amazonaws.com'
+        awsauth = AWS4Auth( 'AKIAITWX6QS2WAYB3NPQ', 'yacyjM/f02hTEhRcHdtXEYFdPEuiShutvOWqze2H', 'us-east-1', 'es')
+        try:
+                self.es = Elasticsearch(
+                      hosts=[{'host': host, 'port': 443}],
+                      http_auth=awsauth,
+                      use_ssl=True,
+                      verify_certs=True,
+                      connection_class=RequestsHttpConnection)    
+        except:
+                print ("Connection to Elasticsearch host %s failed.",args.es_host)
+        else:
+            try:
+                    self.client = client.IndicesClient(self.es) 
+            except:
+                print ("Elasticsearch client interface create failed on host:%s.",args.es_host)
+            else:
+                self.indexLabel = args.index
 
-data = {}
-
-
-
-# add test-index to elastic search cluster and link mapping
-def makeMapping(self, es):
-    es.indices.create(index='test-index', ignore=400)
-    es.indices.put_mapping(index='test-index', body=mapping, doc_type='csv')
-
-
-#create mapping
-mapping=  {
+    def index_create( self ):
+        event=  {
             "properties": {
 
                 "eventName": {
@@ -40,59 +49,182 @@ mapping=  {
                 },"organizer": {
                     "type":"string",
                     "index":"analyzed"
-                },"language": {
-                    "type":"string",
-                    "index":"analyzed"
-                },"last_build_date": {
+                },"participants": {
                     "type":"string",
                     "index":"analyzed"
                 },"description": {
                     "type":"string",
                     "index":"analyzed"
-                },"keywords": {
+                },"tags": {
                     "type":"string",
                     "index":"analyzed"
-                },"itunes_id": {
-                    "type":"string",
-                    "index":"not_analyzed"
-                },"first_episode": {
-                    "type":"string",
-                    "index":"not_analyzed"
-                },"first_episode_title": {
+                },"registrationRequired": {
                     "type":"string",
                     "index":"analyzed"
-                },"last_episode": {
+                },"location": {
                     "type":"string",
                     "index":"not_analyzed"
-                },"last_episode_title": {
+                },"address": {
                     "type":"string",
                     "index":"not_analyzed"
-                },"rank": {
+                },"city": {
+                    "type":"string",
+                    "index":"analyzed"
+                },"zipCode": {
+                    "type":"string",
+                    "index":"not_analyzed"
+                },"startTime": {
+                    "type":"string",
+                    "index":"not_analyzed"
+                },"endTime": {
+                    "type":"float",
+                    "index":"analyzed"
+                },"duration": {
+                    "type":"float",
+                    "index":"analyzed"
+                },"cost": {
+                    "type":"float",
+                    "index":"analyzed"
+                },"minCost": {
+                    "type":"float",
+                    "index":"analyzed"
+                },"maxCsot": {
+                    "type":"float",
+                    "index":"analyzed"
+                },"refundPolicy": {
+                    "type":"float",
+                    "index":"analyzed"
+                },"subOrganizers": {
+                    "type":"float",
+                    "index":"analyzed"
+                },"sponsors": {
+                    "type":"float",
+                    "index":"analyzed"
+                },"ID": {
                     "type":"float",
                     "index":"analyzed"
                 }
             }
         }
+        cfg = {
+                "settings": {
+                     "index": {
+                        "number_of_shards":   1,
+                        "number_of_replicas": 0
+                      }
+                },
+                    
+                "mappings": {
+                     "event": event,
+                 }
+                    
+               }
+        if self.client != None:
+            self.client.create(index=self.indexLabel,body=cfg)
+            
+    def index_delete( self ):
+        if self.client != None and self.client.exists(index=self.indexLabel):
+            r = self.client.delete(index=self.indexLabel)
 
-event1 =  Event("event1", "IOrganizer", "Participants", "descript", False, "boston", "cost", "date", "endDate")
-event1.getJSON()#this just updates dictionary
-data = event1.getDictionary()
-print(data)
-uniqueID = data['eventName'] + data['startTime']
+    def send_events_to_ES(self, eventList):
+        '''
+        Sends list of podcasts to ES
+        '''
+        r0   = { '_op_type': "",
+                 '_index':es,
+                 '_type':"",
+                 '_id':int,
+                 'eventName':"", 'organizer': "",'participants':"",'description':"",'tags':[],'registrationRequired':bool,'location':"",'address':'','city':'','zipCode':"",'startTime':"",'endTime':"",'duration':int,'cost':int,'minCost':int,'maxCsot':int,'refundPolicy':bool,'subOrganizers':"",'sponsors':""}        
+        docL = []
+        
+        eventList = [{ '_op_type':'index',
+                       '_index':'event2',
+                       '_type':"event",
+                       '_id':1,
+                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                    {  '_op_type': 'index',
+                       '_index':"event2",
+                       '_type':"event",
+                       '_id':2,
+                       'eventName':"testEvent2", 'organizer': "Tigran",'participants':"andy",'description':"second event input",'tags':[],'registrationRequired':False,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':50,'cost':10,'minCost':0,'maxCsot':10,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                     {  '_op_type': 'index',
+                       '_index':"event2",
+                       '_type':"event",
+                       '_id':3,
+                       'eventName':"testEvent3", 'organizer': "Tigran",'participants':"andy",'description':"second event input",'tags':[],'registrationRequired':False,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':50,'cost':10,'minCost':0,'maxCsot':10,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                     {  '_op_type': 'index',
+                       '_index':"event2",
+                       '_type':"event",
+                       '_id':4,
+                       'eventName':"testEvent4", 'organizer': "Tigran",'participants':"andy",'description':"second event input",'tags':[],'registrationRequired':False,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':50,'cost':10,'minCost':0,'maxCsot':10,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                     {  '_op_type': 'index',
+                       '_index':"event2",
+                       '_type':"event",
+                       '_id':5,
+                       'eventName':"testEvent5", 'organizer': "Tigran",'participants':"andy",'description':"second event input",'tags':[],'registrationRequired':False,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':50,'cost':10,'minCost':0,'maxCsot':10,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    }
+                     ]
 
-#connect to aws elasticsearch cluster instance : cluster name is "eventapplication"
-es = Elasticsearch(
-    hosts=[{'host': host, 'port': 443}],
-    http_auth=awsauth,
-    use_ssl=True,
-    verify_certs=True,
-    connection_class=RequestsHttpConnection)    
-print(es.info())
+        
+        print ('sending event to ES')
+        for event in eventList:
+            try:
+                entry=copy.deepcopy(r0)
+                for key in r0:
+                    if key in event:
+                        entry[key]=event.get(key)
+                docL.append(entry)
+            except:
+                print ('error that prevents sending event to stic')
+        self._bulk_insert( docL )
+                                   
+    def _bulk_insert( self, docL ):
+        try:
+            helpers.bulk(client=self.es,actions=docL,stats_only=True) 
+        except Exception as e:
+            print ('elastic bulk send error: '+str(type(e)))
+            
+    def apply_query_settings( self ):
+        settings = {
+            "settings": {
+                "index": {
+                    "number_of_replicas": 7
+                }
+            }            
+        }
+        if self.client!=None:
+            r = self.client.put_settings(body=settings, index=self.indexLabel )
+                                   
+def parse_pgm_args():
 
-es.indices.create(index=uniqueID, ignore=400)
-es.indices.put_mapping(index=uniqueID, body=data, doc_type='JSON')#does not accep data's mapping but accepts mapping. 
+    descStr = """ Perform an operation (create,delete,report)"""
+    ap = argparse.ArgumentParser(description=descStr)
+    ap.add_argument("-a","--action",          choices=['delete','create','report', 'bulkInsert'])
+    ap.add_argument("-x","--index",           default="event2")
+    return ap.parse_args()
 
+if __name__ == '__main__':
+    args = parse_pgm_args()
+    EsTest = ES_Client(args)
+    
+    #delete, report, or create
+    
+    print (args)
+    if  args.action=='create':
+        EsTest.index_create()
+        EsTest.apply_query_settings()
+    elif args.action=='delete':
+        EsTest.index_delete()
+    elif args.action=='bulkInsert':
+        EsTest.send_events_to_ES('eventList')
+    else:
+        print("Unknown action:%s",args.action)
+        
+    pass
 
-
-
+                                   
 
