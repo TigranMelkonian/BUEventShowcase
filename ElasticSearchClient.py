@@ -119,12 +119,15 @@ class ES_Client:
                  }
                     
                }
-        if self.client != None:
+        try: 
+            #self.client != None:
             self.client.create(index=self.indexLabel,body=cfg)
-        else: #here we have to define what happens when the client already exists
+        except: #here we have to define what happens when the client already exists
             print("hello, already exists")
             whereWeWantToInsert = self.index
-            #self.client._bulk_insert() 
+            docL = checkFormatting(eventList)
+            print(docL)
+            #self.client._bulk_insert(docL) 
             #add node to its respective index
 
     def index_delete( self ):
@@ -162,20 +165,6 @@ class ES_Client:
                  'eventName':"", 'organizer': "",'participants':"",'description':"",'tags':[],'registrationRequired':bool,'location':"",'address':'','city':'','zipCode':"",'startTime':"",'endTime':"",'duration':int,'cost':int,'minCost':int,'maxCsot':int,'refundPolicy':bool,'subOrganizers':"",'sponsors':""}        
         docL = []
         '''
-        #in future would call andy's event.py
-        eventList = [{ '_op_type':'index',
-                       '_index':'math',
-                       '_type':"event",
-                       '_id':1,
-                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    },
-                     { '_op_type':'index',
-                       '_index':'science',
-                       '_type':"event",
-                       '_id':1,
-                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    }]
-
         '''
         print ('sending event to ES')
         for event in eventList:
@@ -220,8 +209,21 @@ if __name__ == '__main__':
     args = parse_pgm_args()
     EsTest = ES_Client(args)
     
+#in future would call andy's event.py
+    eventList = [{ '_op_type':'index',
+                       '_index':'math',
+                       '_type':"event",
+                       '_id':1,
+                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                     { '_op_type':'index',
+                       '_index':'newwwww',
+                       '_type':"event",
+                       '_id':1,
+                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    }]
+
     #delete, report, or create
-    
     print (args)
     if  args.action=='create':
         EsTest.index_create()
@@ -232,7 +234,8 @@ if __name__ == '__main__':
         EsTest.send_events_to_ES('eventList')
     else:
         print("Unknown action:%s",args.action)
-        
+
+
     pass
 
                                    
