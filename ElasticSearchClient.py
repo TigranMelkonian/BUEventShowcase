@@ -131,43 +131,24 @@ class ES_Client:
         Sends list of podcasts to ES
         '''
         r0   = { '_op_type': "",
-                 '_index':es,
+                 '_index':self.es,
                  '_type':"",
                  '_id':int,
                  'eventName':"", 'organizer': "",'participants':"",'description':"",'tags':[],'registrationRequired':bool,'location':"",'address':'','city':'','zipCode':"",'startTime':"",'endTime':"",'duration':int,'cost':int,'minCost':int,'maxCsot':int,'refundPolicy':bool,'subOrganizers':"",'sponsors':""}        
         docL = []
-        
+        #in future would call andy's event.py
         eventList = [{ '_op_type':'index',
-                       '_index':'event2',
+                       '_index':'math',
                        '_type':"event",
                        '_id':1,
                        'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     },
-                    {  '_op_type': 'index',
-                       '_index':"event2",
+                     { '_op_type':'index',
+                       '_index':'science',
                        '_type':"event",
-                       '_id':2,
-                       'eventName':"testEvent2", 'organizer': "Tigran",'participants':"andy",'description':"second event input",'tags':[],'registrationRequired':False,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':50,'cost':10,'minCost':0,'maxCsot':10,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    },
-                     {  '_op_type': 'index',
-                       '_index':"event2",
-                       '_type':"event",
-                       '_id':3,
-                       'eventName':"testEvent3", 'organizer': "Tigran",'participants':"andy",'description':"second event input",'tags':[],'registrationRequired':False,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':50,'cost':10,'minCost':0,'maxCsot':10,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    },
-                     {  '_op_type': 'index',
-                       '_index':"event2",
-                       '_type':"event",
-                       '_id':4,
-                       'eventName':"testEvent4", 'organizer': "Tigran",'participants':"andy",'description':"second event input",'tags':[],'registrationRequired':False,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':50,'cost':10,'minCost':0,'maxCsot':10,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    },
-                     {  '_op_type': 'index',
-                       '_index':"event2",
-                       '_type':"event",
-                       '_id':5,
-                       'eventName':"testEvent5", 'organizer': "Tigran",'participants':"andy",'description':"second event input",'tags':[],'registrationRequired':False,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':50,'cost':10,'minCost':0,'maxCsot':10,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    }
-                     ]
+                       '_id':1,
+                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    }]
 
         
         print ('sending event to ES')
@@ -204,7 +185,7 @@ def parse_pgm_args():
     descStr = """ Perform an operation (create,delete,report)"""
     ap = argparse.ArgumentParser(description=descStr)
     ap.add_argument("-a","--action",          choices=['delete','create','report', 'bulkInsert'])
-    ap.add_argument("-x","--index",           default="event2")
+    ap.add_argument("-x","--index",           default="math")
     return ap.parse_args()
 
 if __name__ == '__main__':
