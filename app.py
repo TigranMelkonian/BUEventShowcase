@@ -25,3 +25,6 @@ def createIndex():
 	client.indices.create(index=random, ignore=200)
 
 '''
+
+def getEventById(id):
+	
