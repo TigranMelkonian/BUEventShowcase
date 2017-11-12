@@ -10,8 +10,6 @@ from elasticsearch import helpers
 from requests_aws4auth import AWS4Auth
 import argparse
 import json
-import copy
-import csv
 import requests
 
 
@@ -20,8 +18,10 @@ class ES_Client:
         self.args = args
         self.es = None
         self.client = None
+        aws_access_code = input("What is your aws access key ID? ") # going to require user to input access codes through comand line so that we do not compromise security
+        aws_secret_code = input("What is your aws secret key? ")
         host = 'search-eventapplication-ldgoqbtlexdxxkndppin4fmifm.us-east-1.es.amazonaws.com'
-        awsauth = AWS4Auth( 'aws_access_code', 'aws_secret_code', 'us-east-1', 'es')
+        awsauth = AWS4Auth( aws_access_code, aws_secret_code, 'us-east-1', 'es')
         try:
                 self.es = Elasticsearch(
                       hosts=[{'host': host, 'port': 443}],
@@ -124,13 +124,7 @@ class ES_Client:
             self.client.create(index=self.indexLabel,body=cfg)
         except: #here we have to define what happens when the client already exists
             print("hello, already exists")
-            whereWeWantToInsert = self.index
-            docL = checkFormatting(eventList)
-            print(docL)
-            #self.client._bulk_insert(docL) 
-            #add node to its respective index
-
-    def index_delete( self ):
+        def index_delete( self ):
         if self.client != None and self.client.exists(index=self.indexLabel):
             r = self.client.delete(index=self.indexLabel)
 
@@ -212,22 +206,7 @@ if __name__ == '__main__':
     EsTest = ES_Client(args)
     
 #in future would call andy's event.py
-    '''
-    eventList = [{ '_op_type':'index',
-                       '_index':'math',
-                       '_type':"event",
-                       '_id':1,
-                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    },
-                    { '_op_type':'index',
-                       '_index':'science',
-                       '_type':"event",
-                       '_id':1,
-                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    }
-
-                    ]
-'''
+   
     eventList = [{ '_op_type':'index',
                        '_index':'events2',
                        '_type':"event",
@@ -249,9 +228,6 @@ if __name__ == '__main__':
         #print("called for new events")
 
     print (args)
-    #if  args.action=='create':
-     #   EsTest.index_create()
-      #  EsTest.apply_query_settings()
     if args.action=='delete':
         EsTest.index_delete()
     elif args.action=='bulkInsert':
