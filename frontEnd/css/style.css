@@ -487,26 +487,18 @@ iframe{
     width: 100%;
 }
 .main-featured-sec::before {
-    background-image: url("../images/layer.png");
+    background-image: url("../images/background.png");
     content: "";
     background-size: contain;
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 1;
+    background-repeat: no-repeat;
+    background-position:center; 
 }
 .gradient-layer:before{
-    background-image: url("../images/layer.png");
+    background-image: url("../images/background.png");
     content: "";
     background-size: contain;
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 1;
+    background-repeat: no-repeat;
+    background-position:center; 
 }
 .main-featured-text h1 {
     color: #ffffff;
