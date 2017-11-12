@@ -21,7 +21,7 @@ class ES_Client:
         self.es = None
         self.client = None
         host = 'search-eventapplication-ldgoqbtlexdxxkndppin4fmifm.us-east-1.es.amazonaws.com'
-        awsauth = AWS4Auth( 'AKIAITWX6QS2WAYB3NPQ', 'yacyjM/f02hTEhRcHdtXEYFdPEuiShutvOWqze2H', 'us-east-1', 'es')
+        awsauth = AWS4Auth( 'aws_access_code', 'aws_secret_code', 'us-east-1', 'es')
         try:
                 self.es = Elasticsearch(
                       hosts=[{'host': host, 'port': 443}],
