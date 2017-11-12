@@ -134,6 +134,10 @@ class ES_Client:
         if self.client != None and self.client.exists(index=self.indexLabel):
             r = self.client.delete(index=self.indexLabel)
 
+    def get_info(self, indexName):
+        if self.client !=None and self.client.exists(index=self.indexName):
+            return info(node_id=indexName)
+
     def checkFormatting(self, eventList):
         r0   = { '_op_type': "",
                  '_index':self.es,
@@ -198,7 +202,7 @@ def parse_pgm_args():
 
     descStr = """ Perform an operation (create,delete,report)"""
     ap = argparse.ArgumentParser(description=descStr)
-    ap.add_argument("-a","--action",          choices=['delete','create','report', 'bulkInsert'])
+    ap.add_argument("-a","--action",          choices=['delete','create','report', 'bulkInsert', 'get'])
     ap.add_argument("-x","--index",           default="noInput")
     #ap.add_argument("-get","--get_EventList",   default=False)
     return ap.parse_args()
@@ -252,6 +256,8 @@ if __name__ == '__main__':
         EsTest.index_delete()
     elif args.action=='bulkInsert':
         EsTest.send_events_to_ES(eventList)
+    elif(args.action=='get'): #still needs to be tested
+        EsTest.info(node_id=args.index)
     else:
         print("Unknown action:%s",args.action)
 
