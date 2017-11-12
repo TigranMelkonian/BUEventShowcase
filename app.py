@@ -1,14 +1,13 @@
 from flask import Flask, render_template
 import numpy as np
 from numpy.random import randn
-#import ElasticSearchClient
+from ElasticSearchClient import ES_Client
 
 app = Flask(__name__)
-#client = ElasticSearchClient.es
 
 @app.route('/')
 def index():
-    return render_template("/../frontEnd/index.htm")
+    return render_template("index.htm")
 '''
 def checkEventID(event):
 	if event.id in ElasticSearchClient.es:
@@ -26,5 +25,16 @@ def createIndex():
 
 '''
 
-def getEventById(id):
-	
+def delete_by_index()
+
+def get_event_by_id(id):
+	client = ES_Client(id)
+
+	info = client.get_info(id)
+	if info = None:
+		return "Event does not exist :("
+	else:
+		return info
+
+
+

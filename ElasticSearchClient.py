@@ -124,7 +124,7 @@ class ES_Client:
             self.client.create(index=self.indexLabel,body=cfg)
         except: #here we have to define what happens when the client already exists
             print("hello, already exists")
-        def index_delete( self ):
+    def index_delete( self ):
         if self.client != None and self.client.exists(index=self.indexLabel):
             r = self.client.delete(index=self.indexLabel)
 
