@@ -154,19 +154,14 @@ class ES_Client:
                 
 
     def send_events_to_ES(self, eventList):
-        '''
-        Sends list of podcasts to ES
-        '''
-        '''
+        #docL=self.checkFormatting(eventList)
+        #print(docL)
         r0   = { '_op_type': "",
                  '_index':self.es,
                  '_type':"",
                  '_id':int,
                  'eventName':"", 'organizer': "",'participants':"",'description':"",'tags':[],'registrationRequired':bool,'location':"",'address':'','city':'','zipCode':"",'startTime':"",'endTime':"",'duration':int,'cost':int,'minCost':int,'maxCsot':int,'refundPolicy':bool,'subOrganizers':"",'sponsors':""}        
         docL = []
-        '''
-        '''
-        print ('sending event to ES')
         for event in eventList:
             try:
                 entry=copy.deepcopy(r0)
@@ -176,13 +171,15 @@ class ES_Client:
                 docL.append(entry)
             except:
                 print ('error that prevents sending event to stic')
-        '''
-        docL=self.checkFormatting(eventList)
+        print("we're here")
         self._bulk_insert( docL )
                                   
     def _bulk_insert( self, docL ):
         try:
             helpers.bulk(client=self.es,actions=docL,stats_only=True) 
+            #for event in docL:
+             #   print(event)
+                #helpers.bulk(client=self.es, actions=event, index=event['_index'], stats_only=True)
         except Exception as e:
             print ('elastic bulk send error: '+str(type(e)))
             
@@ -195,14 +192,15 @@ class ES_Client:
             }            
         }
         if self.client!=None:
-            r = self.client.put_settings(body=settings, index=self.indexLabel )
+            r = self.client.put_settings(body=settings, index=self.indexLabel)
                                    
 def parse_pgm_args():
 
     descStr = """ Perform an operation (create,delete,report)"""
     ap = argparse.ArgumentParser(description=descStr)
     ap.add_argument("-a","--action",          choices=['delete','create','report', 'bulkInsert'])
-    ap.add_argument("-x","--index",           default="math")
+    ap.add_argument("-x","--index",           default="noInput")
+    #ap.add_argument("-get","--get_EventList",   default=False)
     return ap.parse_args()
 
 if __name__ == '__main__':
@@ -210,28 +208,50 @@ if __name__ == '__main__':
     EsTest = ES_Client(args)
     
 #in future would call andy's event.py
+    '''
     eventList = [{ '_op_type':'index',
                        '_index':'math',
                        '_type':"event",
                        '_id':1,
                        'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     },
-                     { '_op_type':'index',
-                       '_index':'newwwww',
+                    { '_op_type':'index',
+                       '_index':'science',
                        '_type':"event",
                        '_id':1,
                        'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    }]
+                    }
 
+                    ]
+'''
+    eventList = [{ '_op_type':'index',
+                       '_index':'events2',
+                       '_type':"event",
+                       '_id':8,
+                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                    { '_op_type':'index',
+                       '_index':'random',
+                       '_type':"event",
+                       '_id':13,
+                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCsot':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    }
+
+                    ]
     #delete, report, or create
+    #if(args.get_EventList==True):
+        #call andy's function
+        #eventList = call Event.py
+        #print("called for new events")
+
     print (args)
-    if  args.action=='create':
-        EsTest.index_create()
-        EsTest.apply_query_settings()
-    elif args.action=='delete':
+    #if  args.action=='create':
+     #   EsTest.index_create()
+      #  EsTest.apply_query_settings()
+    if args.action=='delete':
         EsTest.index_delete()
     elif args.action=='bulkInsert':
-        EsTest.send_events_to_ES('eventList')
+        EsTest.send_events_to_ES(eventList)
     else:
         print("Unknown action:%s",args.action)
 
