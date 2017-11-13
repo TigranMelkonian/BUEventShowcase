@@ -1,7 +1,7 @@
 from flask import Flask, render_template
-import numpy as np
-from numpy.random import randn
-from ElasticSearchClient import ES_Client
+import json
+import ElasticSearchClient as client
+from Event import getJSON
 
 app = Flask(__name__)
 
@@ -9,22 +9,30 @@ app = Flask(__name__)
 def index():
     return render_template("index.htm")
 
+@app.route('/create', methods=['POST'])
 def create_index():
-	client = ES_Client()
 	client.index_create()
 
+@app.route('/delete', methods=['POST'])
 def delete_index():
-	client = ES_Client("")
-	client.index_delete()
+	client.index_delete() 
 
-def get_event_by_id(id):
-	client = ES_Client(id)
+@app.route('/search', methods=['GET'])
+def search_event_by_id(id):
+	info = client.get_event_by_id(id)
 
-	info = client.get_info(id)
 	if info = None:
 		return "Event does not exist :("
 	else:
 		return info
 
+@app.route('/search', methods=['GET'])
+def search_event(JSONObj):
+	client = ES_Client("")
+	JSONDict = json.loads(JSONObj)
 
-
+	event_info = client.search(JSONDict)
+	if event_info = None:
+		return "Event does not exist :("
+	else:
+		return event_info
