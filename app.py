@@ -30,7 +30,7 @@ def search_event(JSONObj):
 	client = ES_Client("")
 	JSONDict = json.loads(JSONObj)
 
-	event_info = client.search(JSONDict)
+	event_info = client.get_event(JSONDict)
 	if event_info == None:
 		return "Event does not exist :("
 	else:
