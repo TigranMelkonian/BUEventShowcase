@@ -1,7 +1,6 @@
 from flask import Flask, render_template
 import json
 import ElasticSearchClient as client
-from Event import getJSON
 
 app = Flask(__name__)
 
@@ -21,7 +20,7 @@ def delete_index():
 def search_event_by_id(id):
 	info = client.get_event_by_id(id)
 
-	if info = None:
+	if info == None:
 		return "Event does not exist :("
 	else:
 		return info
@@ -32,7 +31,7 @@ def search_event(JSONObj):
 	JSONDict = json.loads(JSONObj)
 
 	event_info = client.search(JSONDict)
-	if event_info = None:
+	if event_info == None:
 		return "Event does not exist :("
 	else:
 		return event_info
