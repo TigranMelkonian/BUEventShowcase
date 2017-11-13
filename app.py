@@ -17,7 +17,7 @@ def create_index():
 def delete_index():
 	client.index_delete() 
 
-@app.route('/search', methods=['GET'])
+@app.route('/searchID', methods=['GET'])
 def search_event_by_id(id):
 	info = client.get_event_by_id(id)
 
