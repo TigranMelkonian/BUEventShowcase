@@ -1,12 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import json
 import ElasticSearchClient as client
+import os
 
-app = Flask(__name__)
+# app = Flask(__name__)
+template_dir = os.path.abspath('static')
+app = Flask(__name__, template_folder=template_dir)
 
 @app.route('/')
 def main():
-    return render_template("index.htm")
+    return render_template("index.html")
 
 @app.route('/create', methods=['POST'])
 def create_index():
@@ -16,8 +19,10 @@ def create_index():
 def delete_index():
 	client.index_delete() 
 
-@app.route('/searchID', methods=['GET'])
-def search_event_by_id(id):
+@app.route('/searchID',  methods=["POST"])
+def search_event_by_id():
+	id=request.form['id']
+	print("recieved id: ",id)
 	info = client.get_event_by_id(id)
 
 	if info == None:
@@ -25,7 +30,7 @@ def search_event_by_id(id):
 	else:
 		return info
 
-@app.route('/search', methods=['GET'])
+@app.route('/search',  methods=["POST"])
 def search_event(JSONObj):
 	client = ES_Client("")
 	JSONDict = json.loads(JSONObj)
