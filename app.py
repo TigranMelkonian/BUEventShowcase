@@ -35,3 +35,6 @@ def search_event(JSONObj):
 		return "Event does not exist :("
 	else:
 		return event_info
+
+if __name__ == "__main__":
+    app.run()
