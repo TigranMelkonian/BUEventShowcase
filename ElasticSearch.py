@@ -56,12 +56,22 @@ class ES_Client:
         except Exception as e:
             print ('elastic bulk send error: '+str(type(e)))
 
+    #gets nodes based on index ID
     def get_info(self, nodeIndex):
         if self.client !=None and self.client.exists(index=self.indexName):
             return self.es.get(index=self.indexName, id=int(nodeIndex))
 
+    #returns the number of nodes in our cluster
     def _count(self):
     	return self.es.count(index=self.indexName)
+
+    #returns a list of nodes that match the query
+    def description_search(self, criteria):
+        if self.client !=None and self.client.exists(index=self.indexName):
+            return self.es.search(index=self.indexName, doc_type='event', q=criteria)
+        else:
+            return "no matches!"
+
 
 
 if __name__ == '__main__':
@@ -77,8 +87,20 @@ if __name__ == '__main__':
     eventList = [{ '_op_type':'index',
                        '_index':'events55',
                        '_type':"event",
-                       '_id':22,
-                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first event input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                       '_id':1,
+                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                    { '_op_type':'index',
+                       '_index':'events55',
+                       '_type':"event",
+                       '_id':5,
+                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tigre input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                    { '_op_type':'index',
+                       '_index':'events55',
+                       '_type':"event",
+                       '_id':8,
+                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"tiger",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     }
 
                     ]
@@ -99,7 +121,10 @@ if __name__ == '__main__':
 	        print(answer)
 	    elif(action=='count'):
 	    	print(EsTest._count())
-	   	
+	    elif(action=='sd'):
+	    	criteria = input("what you looking for?")
+	    	solution=EsTest.description_search(criteria)
+	    	print(solution)
 	    else:
 	        print("Unknown action:%s",action)
 	    pass
