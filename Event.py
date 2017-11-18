@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
-"""
+'''
 Event Object Sketch for PCT Project
-"""
+'''
 import datetime
 import json
 
 class Event:
     data = {}
-    eventName = ""
-    organizer = ""
-    participants = ""
-    description = ""
+    eventName = ''
+    organizer = ''
+    participants = ''
+    description = ''
     tags = [] #array of strings for now
     registrationRequired= False
     
     #https://pypi.python.org/pypi/pyzipcode
     #using this package will allow us to only get address and Zip code
     #then the zip code will find their city and state for us! (Yet to implement)
-    location = ""
-    address = ""
-    city = ""
-    zipCode = ""
+    location = ''
+    address ''
+    city = ''
+    zipCode = ''
     
     #https://docs.python.org/3/library/datetime.html
     #each timeDate class has attributes year, month, day, hour, minute, second, microsecond, tzinfo
@@ -36,12 +36,6 @@ class Event:
     
     subOrganizers = []
     sponsors = []
-    
-    #removed anything to do with links, that will be in the HTML I presume.
-    
-    #Don't know how these will be used yet
-    ID = 123
-    otherIDs = "asdf"
     
 
     '''Constructor with all the required fields needed'''
@@ -59,16 +53,60 @@ class Event:
     
     '''Converts existing data in the object into a dictionary, then returns it as a JSON object'''
     def getJSON(self):
-        self.data = {"eventName":self.eventName, "organizer":self.organizer, "participants":self.participants, "description":self.description, \
-                     "tags": self.tags, "registrationRequired":self.registrationRequired, "location":self.location, \
-                     "address":self.address, "city":self.city, "zipCode":self.zipCode, "startTime":self.startTime, \
-                     "endTime": self.endTime, "duration":self.duration, "cost":self.cost, "minCost":self.minCost, \
-                     "maxCost":self.maxCost, "refundPolicy":self.refundPolicy, "subOrganizers":self.subOrganizers, \
-                     "sponsors": self.sponsors, "ID":self.ID}
+        self.data = {
+        '_op_type': "",
+        '_index': None,
+        '_type': "",
+        '_id' : int,
+        'eventName':self.eventName, 
+        'organizer':self.organizer, 
+        'participants':self.participants, 
+        'description':self.description, 
+        'tags': self.tags, 
+        'registrationRequired':self.registrationRequired, 
+        'location':self.location, 
+        'address':self.address, 
+        'city':self.city, 
+        'zipCode':self.zipCode, 
+        'startTime':self.startTime, 
+        'endTime': self.endTime, 
+        'duration':self.duration, 
+        'cost':self.cost, 
+        'minCost':self.minCost, 
+        'maxCost':self.maxCost, 
+        'refundPolicy':self.refundPolicy, 
+        'subOrganizers':self.subOrganizers, 
+        'sponsors': self.sponsors, 
+        }
         json_data = json.dumps(self.data)
         return json_data
     
     def getDictionary(self):
+        self.data = {
+        '_op_type': "",
+        '_index': None,
+        '_type': "",
+        '_id' : int,
+        'eventName':self.eventName, 
+        'organizer':self.organizer, 
+        'participants':self.participants, 
+        'description':self.description, 
+        'tags': self.tags, 
+        'registrationRequired':self.registrationRequired, 
+        'location':self.location, 
+        'address':self.address, 
+        'city':self.city, 
+        'zipCode':self.zipCode, 
+        'startTime':self.startTime, 
+        'endTime': self.endTime, 
+        'duration':self.duration, 
+        'cost':self.cost, 
+        'minCost':self.minCost, 
+        'maxCost':self.maxCost, 
+        'refundPolicy':self.refundPolicy, 
+        'subOrganizers':self.subOrganizers, 
+        'sponsors': self.sponsors, 
+        }
         return self.data
     
     '''Reads in JSON file and saves it into the object'''
@@ -79,45 +117,45 @@ class Event:
         for key,value in self.data.items():
             #self.eval(key)=value
             #yeah i know this is bad way to reference things
-            if(key=="eventName"):
+            if(key=='eventName'):
                 self.eventName=value
-            elif(key=="organizer"):
+            elif(key=='organizer'):
                 self.organizer=value
-            elif(key=="participants"):
+            elif(key=='participants'):
                 self.participants=value
-            elif(key=="description"):
+            elif(key=='description'):
                 self.description=value
-            elif(key=="tags"):
+            elif(key=='tags'):
                 self.tags=value
-            elif(key=="registrationRequired"):
+            elif(key=='registrationRequired'):
                 self.registrationRequired=value
-            elif(key=="location"):
+            elif(key=='location'):
                 self.location=value
-            elif(key=="address"):
+            elif(key=='address'):
                 self.address=value
-            elif(key=="city"):
+            elif(key=='city'):
                 self.city=value
-            elif(key=="zipCode"):
+            elif(key=='zipCode'):
                 self.zipCode=value
-            elif(key=="startTime"):
+            elif(key=='startTime'):
                 self.startTime=value
-            elif(key=="endTime"):
+            elif(key=='endTime'):
                 self.endTime=value
-            elif(key=="duration"):
+            elif(key=='duration'):
                 self.duration=value
-            elif(key=="cost"):
+            elif(key=='cost'):
                 self.cost=value
-            elif(key=="minCost"):
+            elif(key=='minCost'):
                 self.minCost=value
-            elif(key=="maxCost"):
+            elif(key=='maxCost'):
                 self.maxCost=value
-            elif(key=="refundPolicy"):
+            elif(key=='refundPolicy'):
                 self.refundPolicy=value
-            elif(key=="subOrganizers"):
+            elif(key=='subOrganizers'):
                 self.subOrganizers=value
-            elif(key=="sponsors"):
+            elif(key=='sponsors'):
                 self.sponsors=value
-            elif(key=="ID"):
+            elif(key=='ID'):
                 self.ID=value
         self.getJSON() #update the data dictionary as well
     
