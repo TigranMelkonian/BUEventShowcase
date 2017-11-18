@@ -1,7 +1,14 @@
 from flask import Flask, render_template, request
 import json
-import ElasticSearchClient as client
+import ElasticSearch
+import Event
 import os
+
+passwords = json.load(open("auth.json"))
+access_code = passwords["AWSAccessKeyId"] 
+secret_code = passwords["AWSSecretKey"]
+
+client = ElasticSearch.ES_Client(access_code, secret_code)
 
 # app = Flask(__name__)
 template_dir = os.path.abspath('static')
@@ -15,27 +22,34 @@ def main():
 def create_index():
 	client.index_create()
 
+@app.route('/createEvent', methods=["POST"])
+def create_event(org, loc, time, name):
+	'''
+	nothings
+	'''
+
 @app.route('/delete', methods=['POST'])
-def delete_index():
-	client.index_delete() 
+def delete_event():
+	client.delete_node() 
 
 @app.route('/searchID',  methods=["POST"])
 def search_event_by_id():
 	id=request.form['id']
 	print("recieved id: ",id)
-	info = client.get_event_by_id(id)
+	info = client.get_info(id)
+	print(info)
 
 	if info == None:
 		return "Event does not exist :("
 	else:
-		return info
+		return json.dumps(info)
 
 @app.route('/search',  methods=["POST"])
-def search_event(JSONObj):
+def search_event(jsonStr):
 	client = ES_Client("")
 	JSONDict = json.loads(JSONObj)
 
-	event_info = client.get_event(JSONDict)
+	event_info = client.description_search(JSONDict)
 	if event_info == None:
 		return "Event does not exist :("
 	else:

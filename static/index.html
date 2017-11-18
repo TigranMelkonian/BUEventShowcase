@@ -8,9 +8,16 @@
 <body onload="BUEventShowcase.documentReady()">
 
 <h1>Tester</h1>
-<input type="text" id="idField">
-<button onclick="BUEventShowcase.searchByID()">Test</button>
-<div id="graphContainer"></div>
+<h4>Search</h4>
+<input type="number" placeholder=5 id="idField">
+<button onclick="BUEventShowcase.searchByID()">Search</button>
+<h4>Insert</h4>
+<input type="text" id="org" placeholder="PCT">
+<input type="text" id="location" placeholder="186 Baystate">
+<input type="text" id="time" placeholder="1/18/2018">
+<input type="text" id="name" placeholder="My birthday">
+<button onclick="BUEventShowcase.create()">Insert</button>
+
 </body>
 
 </html>

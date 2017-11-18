@@ -14,3 +14,20 @@ BUEventShowcase.searchByID = function(){
 		console.log(response)
 	})
 }
+BUEventShowcase.create = function(){
+	org=$('#org').val()
+	location=$('#location').val()
+	time=$('#time').val()
+	name=$('#name').val()
+	console.log("sending id: ",ids)
+	$.post("/createEvent",{
+		org: org,
+		location: location,
+		time: time,
+		name: name
+	})
+	.done(function(response){
+		response=JSON.parse(response)
+		console.log(response)
+	})
+}
