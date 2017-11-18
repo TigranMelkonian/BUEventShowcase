@@ -18,7 +18,7 @@ class Event:
     #using this package will allow us to only get address and Zip code
     #then the zip code will find their city and state for us! (Yet to implement)
     location = ''
-    address ''
+    address = ''
     city = ''
     zipCode = ''
     
