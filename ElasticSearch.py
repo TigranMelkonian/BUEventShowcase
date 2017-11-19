@@ -22,7 +22,7 @@ class ES_Client:
         awsauth = AWS4Auth( aws_access_code, aws_secret_code, 'us-east-2', 'es')
         try:
                 #this is hard coded
-                self.indexName = 'events55'
+                self.indexName = 'defaultEvents'
                 self.es = Elasticsearch(
                       hosts=[{'host': host, 'port': 443}],
                       http_auth=awsauth,
@@ -109,19 +109,19 @@ if __name__ == '__main__':
 
 
     eventList = [{ '_op_type':'index',
-                       '_index':'events55',
+                       '_index':'defaultEvents',
                        '_type':"event",
                        '_id':1,
                        'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     },
                     { '_op_type':'index',
-                       '_index':'events55',
+                       '_index':'defaultEvents',
                        '_type':"event",
                        '_id':5,
                        'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tigre input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     },
                     { '_op_type':'index',
-                       '_index':'events55',
+                       '_index':'defaultEvents',
                        '_type':"event",
                        '_id':8,
                        'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"tiger",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
