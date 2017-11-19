@@ -14,15 +14,16 @@ BUEventShowcase.searchByID = function(){
 		console.log(response)
 	})
 }
-BUEventShowcase.create = function(){
+BUEventShowcase.createEvent = function(){
+	console.log("Creating event")
 	org=$('#org').val()
-	location=$('#location').val()
+	Eventlocation=$('#EventLocation').val()
 	time=$('#time').val()
 	name=$('#name').val()
-	console.log("sending id: ",ids)
+	console.log("sending Event: ",name)
 	$.post("/createEvent",{
 		org: org,
-		location: location,
+		location: Eventlocation,
 		time: time,
 		name: name
 	})
