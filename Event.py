@@ -42,7 +42,7 @@ class Event:
     
 
     '''Constructor with all the required fields needed'''
-    def __init__(self, name="", org="", part="", desc="", regReq="No", loc="", inCost=0, startDate="", endDate="", _id=""):
+    def __init__(self, name="", org="", part="", desc="", regReq=False, loc="", inCost=0, startDate="", endDate="", _id=""):
         self.eventName=name
         self.organizer = org
         self.participants = part
@@ -103,7 +103,7 @@ class Event:
         'zipCode':self.zipCode, 
         'startTime':self.startTime, 
         'endTime': self.endTime, 
-        'duration':self.duration, 
+        'duration':'0', 
         'cost':self.cost, 
         'minCost':self.minCost, 
         'maxCost':self.maxCost, 
