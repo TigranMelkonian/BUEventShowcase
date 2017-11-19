@@ -24,9 +24,8 @@ def create_index():
 
 @app.route('/createEvent', methods=["POST"])
 def create_event(org, loc, time, name):
-	'''
-	nothings
-	'''
+	event = [Event.event(org=org, loc=loc, time=time, name=name)]
+	client.send_events_to_ES(event)
 
 @app.route('/delete', methods=['POST'])
 def delete_event():
