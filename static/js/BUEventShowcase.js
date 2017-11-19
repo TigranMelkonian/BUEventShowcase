@@ -13,7 +13,7 @@ BUEventShowcase.searchByID = function(){
 		response=JSON.parse(response)
 		console.log(response)
 	})
-}
+};
 BUEventShowcase.createEvent = function(){
 	console.log("Creating event")
 	org=$('#org').val()

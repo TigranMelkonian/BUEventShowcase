@@ -4,6 +4,9 @@ import ElasticSearch
 import Event
 import os
 
+import hashlib
+
+
 passwords = json.load(open("auth.json"))
 access_code = passwords["AWSAccessKeyId"] 
 secret_code = passwords["AWSSecretKey"]
@@ -28,7 +31,13 @@ def create_event():
 	loc = request.form['location']
 	time = request.form['time']
 	name = request.form['name']
-	event = [Event.event(org=org, loc=loc, time=time, name=name)]
+	mystring = org+name
+	# Assumes the default UTF-8
+	hash_object = hashlib.md5(mystring.encode())
+	print(hash_object.hexdigest())
+	scaryid=int(hash_object.hexdigest(),16	)
+	print(scaryid)
+	event = [Event.Event(org=org, loc=loc, startDate=time, name=name, _id=scaryid).getDictionary()]
 	client.send_events_to_ES(event)
 
 @app.route('/delete', methods=['POST'])

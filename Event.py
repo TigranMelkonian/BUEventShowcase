@@ -28,10 +28,13 @@ class Event:
     startTime = 0
     endTime  = 0
     duration = endTime - startTime #overloaded operator
+
+    #id
+    _id=None
     
-    cost = 0.00
-    minCost = 0.00
-    maxCost = 0.00
+    cost = 0
+    minCost = 0
+    maxCost = 0
     refundPolicy = False
     
     subOrganizers = []
@@ -39,16 +42,17 @@ class Event:
     
 
     '''Constructor with all the required fields needed'''
-    def __init__(self, name, organ, parti, desc, regReq, loc, inCost, inDate, endDate):
+    def __init__(self, name="", org="", part="", desc="", regReq="No", loc="", inCost=0, startDate="", endDate="", _id=""):
         self.eventName=name
-        self.organizer = organ
-        self.participants = parti
+        self.organizer = org
+        self.participants = part
         self.description = desc
         self.registrationRequired = regReq
         self.location = loc
         self.cost = inCost
-        self.startTime = inDate
+        self.startTime = startDate
         self.endTime=endDate
+        self._id=_id
     
     
     '''Converts existing data in the object into a dictionary, then returns it as a JSON object'''
@@ -57,7 +61,7 @@ class Event:
         '_op_type': "",
         '_index': None,
         '_type': "",
-        '_id' : int,
+        '_id' : self._id,
         'eventName':self.eventName, 
         'organizer':self.organizer, 
         'participants':self.participants, 
@@ -83,10 +87,10 @@ class Event:
     
     def getDictionary(self):
         self.data = {
-        '_op_type': "",
-        '_index': None,
-        '_type': "",
-        '_id' : int,
+        '_op_type': "index",
+        '_index': 'events55',
+        '_type': "event",
+        '_id' : self._id,
         'eventName':self.eventName, 
         'organizer':self.organizer, 
         'participants':self.participants, 

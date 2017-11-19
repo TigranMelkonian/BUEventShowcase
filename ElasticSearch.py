@@ -67,6 +67,7 @@ class ES_Client:
                 docL.append(entry)
             except:
                 print ('error that prevents sending event to stic')
+        print(docL)
         self._bulk_insert( docL )
 
     #adds multiple nodes to the default index
