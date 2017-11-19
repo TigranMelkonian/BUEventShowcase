@@ -23,7 +23,11 @@ def create_index():
 	client.index_create()
 
 @app.route('/createEvent', methods=["POST"])
-def create_event(org, loc, time, name):
+def create_event():
+	org = request.form['org']
+	loc = request.form['location']
+	time = request.form['time']
+	name = request.form['name']
 	event = [Event.event(org=org, loc=loc, time=time, name=name)]
 	client.send_events_to_ES(event)
 
