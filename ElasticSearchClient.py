@@ -11,6 +11,7 @@ from requests_aws4auth import AWS4Auth
 import argparse
 import json
 import requests
+import copy
 
 
 class ES_Client:
@@ -18,8 +19,11 @@ class ES_Client:
         self.args = args
         self.es = None
         self.client = None
-        aws_access_code = input("What is your aws access key ID? ") # going to require user to input access codes through comand line so that we do not compromise security
-        aws_secret_code = input("What is your aws secret key? ")
+        passwords = json.load(open("auth.json"))
+        aws_access_code = passwords["AWSAccessKeyId"] 
+        aws_secret_code = passwords["AWSSecretKey"]
+        # aws_access_code = input("What is your aws access key ID? ") # going to require user to input access codes through comand line so that we do not compromise security
+        # aws_secret_code = input("What is your aws secret key? ")
         host = 'search-eventapplication-ldgoqbtlexdxxkndppin4fmifm.us-east-1.es.amazonaws.com'
         awsauth = AWS4Auth( aws_access_code, aws_secret_code, 'us-east-1', 'es')
         try:
@@ -161,9 +165,13 @@ class ES_Client:
                  'eventName':"", 'organizer': "",'participants':"",'description':"",'tags':[],'registrationRequired':bool,'location':"",'address':'','city':'','zipCode':"",'startTime':"",'endTime':"",'duration':int,'cost':int,'minCost':int,'maxCsot':int,'refundPolicy':bool,'subOrganizers':"",'sponsors':""}        
         docL = []
         for event in eventList:
+            print(event)
             try:
+                print("Trying to deepcopy")
                 entry=copy.deepcopy(r0)
+                print(entry)
                 for key in r0:
+
                     if key in event:
                         entry[key]=event.get(key)
                 docL.append(entry)
@@ -227,15 +235,17 @@ if __name__ == '__main__':
         #eventList = call Event.py
         #print("called for new events")
 
-    print (args)
-    if args.action=='delete':
-        EsTest.index_delete()
-    elif args.action=='bulkInsert':
-        EsTest.send_events_to_ES(eventList)
-    elif(args.action=='get'): #still needs to be tested
-        EsTest.info(node_id=args.index)
-    else:
-        print("Unknown action:%s",args.action)
+    EsTest.send_events_to_ES(eventList)
+
+    # print (args)
+    # if args.action=='delete':
+    #     EsTest.index_delete()
+    # elif args.action=='bulkInsert':
+    #     EsTest.send_events_to_ES(eventList)
+    # elif(args.action=='get'): #still needs to be tested
+    #     EsTest.info(node_id=args.index)
+    # else:
+    #     print("Unknown action:%s",args.action)
 
 
     pass

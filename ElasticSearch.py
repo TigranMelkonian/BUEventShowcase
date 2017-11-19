@@ -11,6 +11,7 @@ import argparse
 import json
 import requests
 import sys
+import copy
 
 class ES_Client:
     def __init__(self,aws_access_code, aws_secret_code):
@@ -45,6 +46,28 @@ class ES_Client:
         if self.client != None and self.client.exists(index=self.indexName):
             print('deleting...')
             self.es.delete(index=self.indexName, doc_type="event",id=int(nodeLabel))
+
+    def send_events_to_ES(self, eventList):
+        #docL=self.checkFormatting(eventList)
+        #print(docL)
+        r0   = { '_op_type': "",
+                 '_index':self.es,
+                 '_type':"",
+                 '_id':int,
+                 'eventName':"", 'organizer': "",'participants':"",'description':"",'tags':[],'registrationRequired':bool,'location':"",'address':'','city':'','zipCode':"",'startTime':"",'endTime':"",'duration':int,'cost':int,'minCost':int,'maxCsot':int,'refundPolicy':bool,'subOrganizers':"",'sponsors':""}        
+        docL = []
+        for event in eventList:
+            print("Sending Event: ",event)
+            try:
+                entry=copy.deepcopy(r0)
+                for key in r0:
+
+                    if key in event:
+                        entry[key]=event.get(key)
+                docL.append(entry)
+            except:
+                print ('error that prevents sending event to stic')
+        self._bulk_insert( docL )
 
     #adds multiple nodes to the default index
     def _bulk_insert(self, eventList):
