@@ -3,7 +3,8 @@
 <head>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="/static/js/BUEventShowcase.js"></script>
+<script src="js/BUEventShowcase.js"></script>
+
 </head>
 <body onload="BUEventShowcase.documentReady()">
 
@@ -17,6 +18,12 @@
 <input type="text" id="time" placeholder="1/18/2018">
 <input type="text" id="name" placeholder="My birthday">
 <button onclick="BUEventShowcase.createEvent()">Insert</button>
+<table id="resultsTable1" class="sortable table table-bordered table-striped">
+<thead>
+</thead>
+<tbody>
+</tbody>
+</table>
 
 </body>
 
