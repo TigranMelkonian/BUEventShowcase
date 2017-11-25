@@ -22,7 +22,7 @@ class ES_Client:
         awsauth = AWS4Auth( aws_access_code, aws_secret_code, 'us-east-2', 'es')
         try:
                 #this is hard coded
-                self.indexName = 'defaultEvents'
+                self.indexName = 'events55'
                 self.es = Elasticsearch(
                       hosts=[{'host': host, 'port': 443}],
                       http_auth=awsauth,
@@ -83,7 +83,7 @@ class ES_Client:
     #gets nodes based on index ID
     def get_info(self, nodeIndex):
         if self.client !=None and self.client.exists(index=self.indexName):
-            return self.es.get(index=self.indexName, id=int(nodeIndex))
+          return self.es.get(index=self.indexName, id=int(nodeIndex))
 
     #returns the number of nodes in our cluster
     def _count(self):

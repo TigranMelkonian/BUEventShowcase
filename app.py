@@ -6,9 +6,8 @@ import os
 
 import hashlib
 
-
 passwords = json.load(open("auth.json"))
-access_code = passwords["AWSAccessKeyId"] 
+access_code = passwords["AWSAccessKeyId"]
 secret_code = passwords["AWSSecretKey"]
 
 client = ElasticSearch.ES_Client(access_code, secret_code)
@@ -33,11 +32,11 @@ def create_event():
 	name = request.form['name']
 	mystring = org+name
 	# Assumes the default UTF-8
-	hash_object = hashlib.md5(mystring.encode())
-	print(hash_object.hexdigest())
-	scaryid=int(hash_object.hexdigest(),16	)
-	print(scaryid)
-	event = [Event.Event(org=org, loc=loc, startDate=time, name=name, _id=scaryid).getDictionary()]
+	#hash_object = hashlib.md5(mystring.encode())
+	#print(hash_object.hexdigest())
+	#scaryid=int(hash_object.hexdigest(),16)
+	#print(scaryid)
+	event = [Event.Event(org=org, loc=loc, startDate=time, name=name).getDictionary()]
 	client.send_events_to_ES(event)
 
 @app.route('/delete', methods=['POST'])
@@ -46,10 +45,11 @@ def delete_event():
 
 @app.route('/searchID',  methods=["POST"])
 def search_event_by_id():
-	id=request.form['id']
-	print("recieved id: ",id)
-	info = client.get_info(id)
+	ourID = request.form['id']
+	print("received id: ", ourID)
+	info = client.get_info(ourI)
 	print(info)
+	print(json.dumps(info))
 
 	if info == None:
 		return "Event does not exist :("
