@@ -47,7 +47,7 @@ def delete_event():
 def search_event_by_id():
 	ourID = request.form['id']
 	print("received id: ", ourID)
-	info = client.get_info(ourI)
+	info = client.get_info(ourID)
 	print(info)
 	print(json.dumps(info))
 
