@@ -1,5 +1,5 @@
 '''
-11/18/17
+11/26/17
 New Version of Elastic Search
 '''
 ## I probably dont need all of these. just have them here for future functions / methods
@@ -14,6 +14,12 @@ import sys
 import copy
 
 class ES_Client:
+    
+    '''
+    Expects: aws_access_code and aws_secret_code
+    Does: Initializes new instance of ES_Client class
+    Returns: does not return anything
+    '''
     def __init__(self,aws_access_code, aws_secret_code):
         self.es = None
         self.client = None
@@ -23,6 +29,7 @@ class ES_Client:
         try:
                 #this is hard coded
                 self.indexName = 'Events'
+
                 self.es = Elasticsearch(
                       hosts=[{'host': host, 'port': 443}],
                       http_auth=awsauth,
@@ -32,24 +39,38 @@ class ES_Client:
                 self.client = client.IndicesClient(self.es)    
         except:
                 print ("Connection to Elasticsearch host %s failed.",es)
-        
-    #deletes all the nodes inside a given index  and the index itself fro the cluster
+                
+    '''
+    Expects: the label of the index in AWS Elasticsearch cluster that you would like to delete
+    Does: Deletes all the nodes inside a given index and the index itself fro the cluster
+    Returns: Does not return anything
+    '''
     def index_delete( self, indexLabel):
-        print('indexLabel is ' + indexLabel)
         if self.client != None and self.client.exists(index=indexLabel):
             print('deleting...')
             self.client.delete(index=indexLabel)
 
-    #deletes individual Nodes
+
+    '''
+    Expects: Input the label of the node you wish to delete from event index
+    Does: Deletes individual Nodes from a given index
+    Returns: Does not return anything
+    '''
     def delete_node(self, nodeLabel):
         print('nodeLabel is ' + nodeLabel)
         if self.client != None and self.client.exists(index=self.indexName):
             print('deleting...')
             self.es.delete(index=self.indexName, doc_type="event",id=int(nodeLabel))
-
+            
+    '''
+    Expects: Doc / list of events you would like to send to ES cluster
+    Does: performs a deep copy on each event object and
+          adds to docL[] if its mapping matches the template
+          mapping r0. performs bulk insert on docL to send
+          all valid events to the event index 
+    Returns:Does not return anything
+    '''
     def send_events_to_ES(self, eventList):
-        #docL=self.checkFormatting(eventList)
-        #print(docL)
         r0   = { '_op_type': "",
                  '_index':self.es,
                  '_type':"",
@@ -70,33 +91,49 @@ class ES_Client:
         print(docL)
         self._bulk_insert( docL )
 
-    #adds multiple nodes to the default index
+    '''
+    Expects: an Input of the list of events you would like to send to event index
+    Does: adds multiple nodes to the default index
+    Returns: does not return anything
+    '''
     def _bulk_insert(self, eventList):
         try:
-            helpers.bulk(client=self.es,actions=eventList,stats_only=True) 
-            #for event in docL:
-             #   print(event)
-                #helpers.bulk(client=self.es, actions=event, index=event['_index'], stats_only=True)
+            helpers.bulk(client=self.es, actions=eventList,stats_only=True) 
         except Exception as e:
-            print ('elastic bulk send error: '+str(type(e)))
-
-    #gets nodes based on index ID
+            print ('Elastic bulk send error: '+str(type(e)))
+            
+    '''
+    Expects: The index of the node you want to search
+    Does: Gets node information based on NodeIndex ID
+    Returns: All event information for specified event 
+    '''
     def get_info(self, nodeIndex):
         if self.client !=None and self.client.exists(index=self.indexName):
-          return self.es.get(index=self.indexName, id=int(nodeIndex))
-
-    #returns the number of nodes in our cluster
+            return self.es.get(index=self.indexName, id=int(nodeIndex))
+        
+    '''
+    Expects: No input expected
+    Does: Counts the number of nodes in our cluster
+    Returns: The number of events in our existing event index
+    '''
     def _count(self):
-    	return self.es.count(index=self.indexName)
-
-    #returns a list of nodes that match the query
+        return self.es.count(index=self.indexName)
+    
+    '''
+    Expects: The query input (criteria) you want to search under
+    Does: Searches through all events to find events that match query input
+    Returns: A list of nodes that match the query. Will return " no Matches!" if no matches were found
+    '''
     def description_search(self, criteria):
         if self.client !=None and self.client.exists(index=self.indexName):
             return self.es.search(index=self.indexName, doc_type='event', q=criteria)
         else:
             return "no matches!"
-
-
+        
+    def index_create(self):
+        self.client.create(index=self.indexName)
+        
+        
 
 if __name__ == '__main__':
 
@@ -112,47 +149,63 @@ if __name__ == '__main__':
 
 
 
-    eventList = [{ '_op_type':'index',
-                       '_index':'Events',
-                       '_type':"event",
-                       '_id':1,
-                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    },
-                    { '_op_type':'index',
-                       '_index':'Events',
-                       '_type':"event",
-                       '_id':5,
-                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tigre input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    },
-                    { '_op_type':'index',
-                       '_index':'Events',
-                       '_type':"event",
-                       '_id':8,
-                       'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"tiger",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    }
+    
 
-                    ]
+    eventList = [{  '_op_type':'index',
+                    '_index':'Events',
+                    '_type':"event",
+                    '_id':1,
+                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                {  '_op_type':'index',
+                    '_index':'Events',
+                    '_type':"event",
+                    '_id':2,
+                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                 {  '_op_type':'index',
+                    '_index':'Events',
+                    '_type':"event",
+                    '_id':3,
+                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                {  '_op_type':'index',
+                    '_index':'Events',
+                    '_type':"event",
+                    '_id':4,
+                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                 {  '_op_type':'index',
+                    '_index':'Events',
+                    '_type':"event",
+                    '_id':5,
+                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+
+                    }
+                 ]
     while(True):
-	    action = input("What would you like to do?")	
-	    
-	    if action=='deleteIndex':
-	        indexLabel = input("index label please:")	
-	        EsTest.index_delete(indexLabel)
-	    elif action =='deleteNode':
-	    	nodeLabel = input('node label please:')
-	    	EsTest.delete_node(nodeLabel)
-	    elif action=='bulkInsert':
-	        EsTest._bulk_insert(eventList)
-	    elif(action=='getInfo'):
-	        nodeindex = input("which node #?")
-	        answer =EsTest.get_info(nodeindex)
-	        print(answer)
-	    elif(action=='count'):
-	    	print(EsTest._count())
-	    elif(action=='sd'):
-	    	criteria = input("what you looking for?")
-	    	solution=EsTest.description_search(criteria)
-	    	print(solution)
-	    else:
-	        print("Unknown action:%s",action)
-	    pass
+        action = input("what would you like to do? ")
+        if action=='deleteIndex':
+            indexLabel = input("index label please: ")	
+            EsTest.index_delete(indexLabel)
+        elif action =='deleteNode' :
+            nodeLabel = input('node label please: ')
+            EsTest.delete_node(nodeLabel)
+        elif action == 'indexCreate':
+            EsTest.index_create()
+        elif action=='bulkInsert' :
+            EsTest._bulk_insert(eventList)
+        elif action=='getInfo' :
+            nodeIndex = input("which node #? ")
+            answer =EsTest.get_info(nodeIndex)
+            print(answer)
+        elif action=='count':
+            print(EsTest._count())
+        elif action=='sd' :
+            criteria = input("what you looking for? ")
+            solution=EsTest.description_search(criteria)
+            print(solution)
+        else:
+            print("Unknown action:%s ",action)
+        pass
+
