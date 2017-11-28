@@ -24,13 +24,13 @@ def main():
 def create_index():
 	client.index_create()
 
-@app.route('/createEvent', methods=["POST"])
+@app.route('/createEvent', methods=["GET", "POST"])
 def create_event():
 	org = request.form['org']
 	loc = request.form['location']
 	time = request.form['time']
 	name = request.form['name']
-	mystring = org+name
+	#mystring = org+name
 	# Assumes the default UTF-8
 	#hash_object = hashlib.md5(mystring.encode())
 	#print(hash_object.hexdigest())
@@ -38,6 +38,7 @@ def create_event():
 	#print(scaryid)
 	event = [Event.Event(org=org, loc=loc, startDate=time, name=name).getDictionary()]
 	client.send_events_to_ES(event)
+	return "Not sure if successful or not but I need to return something so here you go."
 
 @app.route('/delete', methods=['POST'])
 def delete_event():

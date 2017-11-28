@@ -23,7 +23,7 @@ BUEventShowcase.createEvent = function(){
 	Eventlocation=$('#EventLocation').val()
 	time=$('#time').val()
 	name=$('#name').val()
-	console.log("sending Event: ",name)
+	console.log("sending Event: ", name)
 	$.post("/createEvent",{
 		org: org,
 		location: Eventlocation,
