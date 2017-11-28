@@ -28,8 +28,7 @@ class ES_Client:
         awsauth = AWS4Auth( aws_access_code, aws_secret_code, 'us-east-2', 'es')
         try:
                 #this is hard coded
-                self.indexName = 'Events'
-
+                self.indexName = 'defaultevents'
                 self.es = Elasticsearch(
                       hosts=[{'host': host, 'port': 443}],
                       http_auth=awsauth,
@@ -46,10 +45,12 @@ class ES_Client:
     Returns: Does not return anything
     '''
     def index_delete( self, indexLabel):
-        if self.client != None and self.client.exists(index=indexLabel):
-            print('deleting...')
-            self.client.delete(index=indexLabel)
-
+       try: 
+                if self.client != None and self.client.exists(index=indexLabel):
+                    self.client.delete(index=indexLabel)
+                    print('200 OK')
+       except Exception as e:
+                print ('500 error: '+str(type(e)))
 
     '''
     Expects: Input the label of the node you wish to delete from event index
@@ -57,10 +58,12 @@ class ES_Client:
     Returns: Does not return anything
     '''
     def delete_node(self, nodeLabel):
-        print('nodeLabel is ' + nodeLabel)
-        if self.client != None and self.client.exists(index=self.indexName):
-            print('deleting...')
-            self.es.delete(index=self.indexName, doc_type="event",id=int(nodeLabel))
+        try:
+            if self.client != None and self.client.exists(index=self.indexName):
+                self.es.delete(index=self.indexName, doc_type="event",id=int(nodeLabel))
+                print('200 OK')
+        except Exception as e:
+            print ('500 error: '+str(type(e)))
             
     '''
     Expects: Doc / list of events you would like to send to ES cluster
@@ -98,9 +101,10 @@ class ES_Client:
     '''
     def _bulk_insert(self, eventList):
         try:
-            helpers.bulk(client=self.es, actions=eventList,stats_only=True) 
+            helpers.bulk(client=self.es, actions=eventList,stats_only=True)
+            print('200 OK')
         except Exception as e:
-            print ('Elastic bulk send error: '+str(type(e)))
+            print ('500 error: '+str(type(e)))
             
     '''
     Expects: The index of the node you want to search
@@ -108,16 +112,21 @@ class ES_Client:
     Returns: All event information for specified event 
     '''
     def get_info(self, nodeIndex):
-        if self.client !=None and self.client.exists(index=self.indexName):
-            return self.es.get(index=self.indexName, id=int(nodeIndex))
-        
+        try:
+            if self.client !=None and self.client.exists(index=self.indexName):
+                return self.es.get(index=self.indexName, id=int(nodeIndex))
+        except Exception as e:
+            print ('500 error: '+str(type(e)))
     '''
     Expects: No input expected
     Does: Counts the number of nodes in our cluster
     Returns: The number of events in our existing event index
     '''
     def _count(self):
-        return self.es.count(index=self.indexName)
+        try:
+            return self.es.count(index=self.indexName)
+        except Exception as e:
+            print ('500 error: '+str(type(e)))
     
     '''
     Expects: The query input (criteria) you want to search under
@@ -125,62 +134,57 @@ class ES_Client:
     Returns: A list of nodes that match the query. Will return " no Matches!" if no matches were found
     '''
     def description_search(self, criteria):
-        if self.client !=None and self.client.exists(index=self.indexName):
-            return self.es.search(index=self.indexName, doc_type='event', q=criteria)
-        else:
-            return "no matches!"
+        try:
+            if self.client !=None and self.client.exists(index=self.indexName):
+                return self.es.search(index=self.indexName, doc_type='event', q=criteria)
+        except Exception as e:
+            print ('Elastic bulk send error: '+str(type(e)))
         
     def index_create(self):
-        self.client.create(index=self.indexName)
+        try:
+            self.client.create(index=self.indexName)
+            print('200 OK')
+        except Exception as e:
+            print ('500 error: '+str(type(e)))
         
+
         
 
 if __name__ == '__main__':
 
-    #aws_access_code = input('Pass access')
-    #aws_secret_code = input("secret please:")
-
-    passwords = json.load(open("auth.json"))
-    aws_access_code = passwords["AWSAccessKeyId"]
-    aws_secret_code = passwords["AWSSecretKey"]
-
-    #EsTest = ES_Client(aws_access_code, aws_secret_code)	
+    aws_access_code = input('Pass access')
+    aws_secret_code = input("secret please:")
     EsTest = ES_Client(aws_access_code, aws_secret_code)
 
-
-
-    
-
     eventList = [{  '_op_type':'index',
-                    '_index':'Events',
+                    '_index':'defaultevents',
                     '_type':"event",
                     '_id':1,
                     'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     },
                 {  '_op_type':'index',
-                    '_index':'Events',
+                    '_index':'defaultevents',
                     '_type':"event",
                     '_id':2,
                     'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     },
                  {  '_op_type':'index',
-                    '_index':'Events',
+                    '_index':'defaultevents',
                     '_type':"event",
                     '_id':3,
                     'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     },
                 {  '_op_type':'index',
-                    '_index':'Events',
+                    '_index':'defaultevents',
                     '_type':"event",
                     '_id':4,
                     'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     },
                  {  '_op_type':'index',
-                    '_index':'Events',
+                    '_index':'defaultevents',
                     '_type':"event",
                     '_id':5,
                     'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-
                     }
                  ]
     while(True):
@@ -208,4 +212,6 @@ if __name__ == '__main__':
         else:
             print("Unknown action:%s ",action)
         pass
+
+
 
