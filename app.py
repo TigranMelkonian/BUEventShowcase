@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request
 import json
 import ElasticSearch
-import Event
 import os
 
 import hashlib
@@ -24,20 +23,24 @@ def main():
 def create_index():
 	client.index_create()
 
+#this makes the event from the form and sends it to elastic search
 @app.route('/createEvent', methods=["GET", "POST"])
 def create_event():
-	org = request.form['org']
-	loc = request.form['location']
-	time = request.form['time']
-	name = request.form['name']
+	events = []
+	event = {}
+	event['organizer'] = request.form['org']
+	event['location'] = request.form['location']
+	event['time'] = request.form['time']
+	event['eventName'] = request.form['name']
+	events.append(event)
 	#mystring = org+name
 	# Assumes the default UTF-8
 	#hash_object = hashlib.md5(mystring.encode())
 	#print(hash_object.hexdigest())
 	#scaryid=int(hash_object.hexdigest(),16)
 	#print(scaryid)
-	event = [Event.Event(org=org, loc=loc, startDate=time, name=name).getDictionary()]
-	client.send_events_to_ES(event)
+	
+	client.send_events_to_ES(events)
 	return "Not sure if successful or not but I need to return something so here you go."
 
 @app.route('/delete', methods=['POST'])
