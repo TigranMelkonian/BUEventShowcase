@@ -7,6 +7,31 @@ import json
 
 class Event:
     data = {}
+    r0   = { '_op_type': "",
+                 '_index':self.es,
+                 '_type':"",
+                 '_id':int,
+                 'eventName':"", 
+                 'organizer': "",
+                 'participants':"",
+                 'description':"",
+                 'tags':[],
+                 'registrationRequired':bool,
+                 'location':"",
+                 'address':'',
+                 'city':'',
+                 'zipCode':"",
+                 'startTime':"",
+                 'endTime':"",
+                 'duration':int,
+                 'cost':int,
+                 'minCost':int,
+                 'maxCsot':int,
+                 'refundPolicy':bool,
+                 'subOrganizers':"",
+                 'sponsors':""
+                 }        
+        
     eventName = ''
     organizer = ''
     participants = ''
