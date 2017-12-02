@@ -48,9 +48,9 @@ class ES_Client:
        try: 
                 if self.client != None and self.client.exists(index=indexLabel):
                     self.client.delete(index=indexLabel)
-                    print('200 OK')
+                    print('OK 200')
        except Exception as e:
-                print ('500 error: '+str(type(e)))
+                print ('Error 500: '+str(type(e)))
 
     '''
     Expects: Input the label of the node you wish to delete from event index
@@ -103,7 +103,7 @@ class ES_Client:
         try:
             helpers.bulk(client=self.es, actions=eventList,stats_only=True)
             print('200 OK')
-        except Exception as e:
+        except elasticsearch.ElasticsearchException as e:
             print ('500 error: '+str(type(e)))
             
     '''
@@ -115,7 +115,7 @@ class ES_Client:
         try:
             if self.client !=None and self.client.exists(index=self.indexName):
                 return self.es.get(index=self.indexName, id=int(nodeIndex))
-        except Exception as e:
+        except elasticsearch.ElasticsearchException  as e:
             print ('500 error: '+str(type(e)))
     '''
     Expects: No input expected
@@ -125,7 +125,7 @@ class ES_Client:
     def _count(self):
         try:
             return self.es.count(index=self.indexName)
-        except Exception as e:
+        except elasticsearch.ElasticsearchException as e:
             print ('500 error: '+str(type(e)))
     
     '''
@@ -137,16 +137,17 @@ class ES_Client:
         try:
             if self.client !=None and self.client.exists(index=self.indexName):
                 return self.es.search(index=self.indexName, doc_type='event', q=criteria)
-        except Exception as e:
+        except elasticsearch.ElasticsearchException as e:
             print ('Elastic bulk send error: '+str(type(e)))
         
     def index_create(self):
         try:
             self.client.create(index=self.indexName)
             print('200 OK')
-        except Exception as e:
+        except elasticsearch.ElasticsearchException as e:
             print ('500 error: '+str(type(e)))
         
+
 
         
 
@@ -156,6 +157,7 @@ if __name__ == '__main__':
     aws_secret_code = input("secret please:")
     EsTest = ES_Client(aws_access_code, aws_secret_code)
 
+    # call andy's event
     eventList = [{  '_op_type':'index',
                     '_index':'defaultevents',
                     '_type':"event",
