@@ -65,15 +65,14 @@ class ES_Client:
         except Exception as e:
             print ('500 error: '+str(type(e)))
             
+
     '''
-    Expects: Doc / list of events you would like to send to ES cluster
-    Does: performs a deep copy on each event object and
-          adds to docL[] if its mapping matches the template
-          mapping r0. performs bulk insert on docL to send
-          all valid events to the event index 
-    Returns:Does not return anything
+    Expects: an Input of the list of events you would like to send to event index
+    Does: checks to make sure they are formatted correctly and then adds multiple nodes to the default index
+    Returns: does not return anything
     '''
-    def send_events_to_ES(self, eventList):
+    def _bulk_insert(self, eventList):
+        
         r0   = { '_op_type': "",
                  '_index':self.es,
                  '_type':"",
@@ -92,14 +91,6 @@ class ES_Client:
             except:
                 print ('error that prevents sending event to stic')
         print(docL)
-        self._bulk_insert( docL )
-
-    '''
-    Expects: an Input of the list of events you would like to send to event index
-    Does: adds multiple nodes to the default index
-    Returns: does not return anything
-    '''
-    def _bulk_insert(self, eventList):
         try:
             helpers.bulk(client=self.es, actions=eventList,stats_only=True)
             print('200 OK')
@@ -169,24 +160,6 @@ if __name__ == '__main__':
                     '_type':"event",
                     '_id':2,
                     'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    },
-                 {  '_op_type':'index',
-                    '_index':'defaultevents',
-                    '_type':"event",
-                    '_id':3,
-                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    },
-                {  '_op_type':'index',
-                    '_index':'defaultevents',
-                    '_type':"event",
-                    '_id':4,
-                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
-                    },
-                 {  '_op_type':'index',
-                    '_index':'defaultevents',
-                    '_type':"event",
-                    '_id':5,
-                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     }
                  ]
     while(True):
@@ -200,6 +173,7 @@ if __name__ == '__main__':
         elif action == 'indexCreate':
             EsTest.index_create()
         elif action=='bulkInsert' :
+            #EsTest.send_events_to_ES(eventList, EsTest)
             EsTest._bulk_insert(eventList)
         elif action=='getInfo' :
             nodeIndex = input("which node #? ")
