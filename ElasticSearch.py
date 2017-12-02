@@ -60,7 +60,7 @@ class ES_Client:
     def delete_node(self, nodeLabel):
         try:
             if self.client != None and self.client.exists(index=self.indexName):
-                self.es.delete(index=self.indexName, doc_type="event",id=int(nodeLabel))
+                self.es.delete(index=self.indexName, doc_type="event",id=nodeLabel)
                 print('200 OK')
         except Exception as e:
             print ('500 error: '+str(type(e)))
@@ -77,9 +77,29 @@ class ES_Client:
                  '_index':self.es,
                  '_type':"",
                  '_id':int,
-                 'eventName':"", 'organizer': "",'participants':"",'description':"",'tags':[],'registrationRequired':bool,'location':"",'address':'','city':'','zipCode':"",'startTime':"",'endTime':"",'duration':int,'cost':int,'minCost':int,'maxCsot':int,'refundPolicy':bool,'subOrganizers':"",'sponsors':""}        
+                 'eventName':"", 
+                 'organizer': "",
+                 'participants':"",
+                 'description':"",
+                 'tags':[],
+                 'registrationRequired':bool,
+                 'location':"",
+                 'address':'',
+                 'city':'',
+                 'zipCode':"",
+                 'startTime':"",
+                 'endTime':"",
+                 'duration':int,
+                 'cost':int,
+                 'minCost':int,
+                 'maxCsot':int,
+                 'refundPolicy':bool,
+                 'subOrganizers':"",
+                 'sponsors':""}        
         docL = []
         for event in eventList:
+            uniqueId = event['eventName'] + event['organizer'] + event['startTime']
+            event['_id']=uniqueId
             print("Sending Event: ",event)
             try:
                 entry=copy.deepcopy(r0)
@@ -153,13 +173,26 @@ if __name__ == '__main__':
                     '_index':'defaultevents',
                     '_type':"event",
                     '_id':1,
-                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':['science','math'],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     },
                 {  '_op_type':'index',
                     '_index':'defaultevents',
                     '_type':"event",
                     '_id':2,
-                    'eventName':"testEvent1", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':[],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    'eventName':"testEvent2", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':['math', 'anthro'],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+                    {  '_op_type':'index',
+                    '_index':'defaultevents',
+                    '_type':"event",
+                    '_id':3,
+                    'eventName':"testEvent3", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':['lit', 'philo', 'ceramics'],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
+                    },
+
+                    {  '_op_type':'index',
+                    '_index':'defaultevents',
+                    '_type':"event",
+                    '_id':3,
+                    'eventName':"testEvent3", 'organizer': "Tigran",'participants':"andy",'description':"first tiger input",'tags':['ceramics'],'registrationRequired':True,'location':"GSU",'address':'near mugar','city':'Boston','zipCode':"02215",'startTime':"now",'endTime':"end",'duration':120,'cost':3,'minCost':0,'maxCost':3,'refundPolicy':False,'subOrganizers':"andy",'sponsors':"none"
                     }
                  ]
     while(True):
